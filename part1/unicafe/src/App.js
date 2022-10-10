@@ -8,7 +8,12 @@ const Button = ({text, handleClick}) => (
   </button>
 )
 
-const StatisticsLine = ({name, value}) => <div>{name} {value}</div>
+const StatisticsLine = ({name, value}) => (
+  <tr>
+    <td>{name}</td>
+    <td>{value}</td>
+  </tr>
+)
 
 const Statistics = ({good, neutral, bad}) => {
   const sum = (values) => values.reduce( (prev, cur) => prev + cur )
@@ -17,14 +22,16 @@ const Statistics = ({good, neutral, bad}) => {
 
   if( sum([good, neutral, bad]) > 0 ) {
     return (
-      <div>
-        <StatisticsLine name ='good' value={good} />
-        <StatisticsLine name ='neutral' value={neutral} />
-        <StatisticsLine name ='bad' value={bad} />
-        <StatisticsLine name ='all' value={sum([good, neutral, bad])} />
-        <StatisticsLine name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
-        <StatisticsLine name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
-      </div>
+      <table>
+        <tbody>
+          <StatisticsLine name ='good' value={good} />
+          <StatisticsLine name ='neutral' value={neutral} />
+          <StatisticsLine name ='bad' value={bad} />
+          <StatisticsLine name ='all' value={sum([good, neutral, bad])} />
+          <StatisticsLine name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
+          <StatisticsLine name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
+        </tbody>
+      </table>
     )
   } else {
     return (
