@@ -1,0 +1,30 @@
+note over browser:
+user types a new note into the form
+and hits the submit button
+end note
+
+note over browser:
+client site javascript processes
+the form and adds a new note
+to the list
+end note
+
+note over browser:
+a XMLHttpRequest is formed and
+json data is sent to the server
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+json data is processed and
+a note is added to the servers
+storage
+end note
+
+server-->browser: HTTP Status 201
+
+note over browser:
+client knows that the operation was
+successfull but no reload appears 
+end note
