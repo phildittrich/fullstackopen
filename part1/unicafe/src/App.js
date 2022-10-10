@@ -15,17 +15,24 @@ const Statistics = ({good, neutral, bad}) => {
   const average = (good, bad, sum) => sum > 0 ? (good - bad) / sum : 0
   const positive = (good, sum) => sum > 0 ? good / sum * 100 : 0
 
-  return (
-    <div>
-      <Header text='statistics' />
-      <Display name ='good' value={good} />
-      <Display name ='neutral' value={neutral} />
-      <Display name ='bad' value={bad} />
-      <Display name ='all' value={sum([good, neutral, bad])} />
-      <Display name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
-      <Display name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
-    </div>
-  )
+  if( sum([good, neutral, bad]) > 0 ) {
+    return (
+      <div>
+        <Display name ='good' value={good} />
+        <Display name ='neutral' value={neutral} />
+        <Display name ='bad' value={bad} />
+        <Display name ='all' value={sum([good, neutral, bad])} />
+        <Display name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
+        <Display name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
 }
 
 const App = () => {
@@ -41,6 +48,7 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral+1)} text='Neutral' />
       <Button handleClick={() => setBad(bad+1)} text='Bad' />
 
+      <Header text='statistics' />
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
