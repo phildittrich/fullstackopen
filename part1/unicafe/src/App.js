@@ -8,7 +8,7 @@ const Button = ({text, handleClick}) => (
   </button>
 )
 
-const Display = ({name, value}) => <div>{name} {value}</div>
+const StatisticsLine = ({name, value}) => <div>{name} {value}</div>
 
 const Statistics = ({good, neutral, bad}) => {
   const sum = (values) => values.reduce( (prev, cur) => prev + cur )
@@ -18,12 +18,12 @@ const Statistics = ({good, neutral, bad}) => {
   if( sum([good, neutral, bad]) > 0 ) {
     return (
       <div>
-        <Display name ='good' value={good} />
-        <Display name ='neutral' value={neutral} />
-        <Display name ='bad' value={bad} />
-        <Display name ='all' value={sum([good, neutral, bad])} />
-        <Display name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
-        <Display name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
+        <StatisticsLine name ='good' value={good} />
+        <StatisticsLine name ='neutral' value={neutral} />
+        <StatisticsLine name ='bad' value={bad} />
+        <StatisticsLine name ='all' value={sum([good, neutral, bad])} />
+        <StatisticsLine name ='all' value={average(good, bad, sum([good, neutral, bad]))} />
+        <StatisticsLine name ='all' value={positive(good, sum([good, neutral, bad])) + ' %'} />
       </div>
     )
   } else {
