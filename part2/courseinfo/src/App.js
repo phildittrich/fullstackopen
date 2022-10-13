@@ -7,8 +7,13 @@ const Part = ({ part }) =>
     {part.name} {part.exercises}
   </p>
 
-const Content = ({ parts }) => 
-  <>
+const Content = ({ parts }) => {
+  const sum = parts.reduce( (sum, part) =>
+    sum += part.exercises
+  , 0 )
+
+  return (
+    <>
     {parts.map( part => 
       <Part
         key={part.id}
@@ -16,11 +21,12 @@ const Content = ({ parts }) =>
       />
     )}
     <Total 
-      sum={parts.reduce( (sum, part) =>
-        sum += part.exercises
-      , 0 )}
+      sum={sum}
     />
   </>
+  )
+}
+
 
 const Course = ({ course }) => 
   <>
