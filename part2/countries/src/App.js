@@ -10,6 +10,10 @@ const App = () => {
 
   const handleSearchChange = event => setSearch(event.target.value)
 
+  const handleShow = (country) => () => {
+    setSearch(country)
+  }
+
   useEffect(() => {
     axios
       .get('https://restcountries.com/v3.1/all')
@@ -21,7 +25,7 @@ const App = () => {
   return (
     <>
       <Search value={search} handleChange={handleSearchChange} />
-      <Countries search={search} countries={countries} />
+      <Countries search={search} countries={countries} handleShow={handleShow}/>
     </>
   )
 }
