@@ -45,11 +45,18 @@ const App = () => {
     if (persons.find( person => person.name === newPerson.name )) {
       alert(`${newPerson.name} already exists`)
     } else {
-      setPersons(persons.concat(newPerson))
-      setNewPerson({
-        name: '',
-        number: ''
-      })
+      axios
+        .post('http://localhost:3001/persons', newPerson)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewPerson({
+            name: '',
+            number: ''
+          })
+        })
+        .catch(error => {
+          console.log('fail')
+        })
     }
   }
 
