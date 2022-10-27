@@ -40,7 +40,7 @@ const App = () => {
     setSearchTerm(event.target.value)
   }
 
-  const handleDelete = (id) => {
+  const removePerson = (id) => {
     personsService
       .remove(id)
       .then(() => {
@@ -51,8 +51,18 @@ const App = () => {
   const addNewPerson = (event) => {
     event.preventDefault()
 
-    if (persons.find( person => person.name === newPerson.name )) {
-      alert(`${newPerson.name} already exists`)
+    const existingPerson = persons.find( person => person.name === newPerson.name )
+
+    if (existingPerson && window.confirm(`${newPerson.name} is already added to the phonebook, replace the old number with a new one?`)) {
+        personsService
+          .update(existingPerson.id, newPerson)
+          .then(data => {
+            setPersons( persons.map( p => p.id !== data.id ? p : data ) )
+            setNewPerson({
+              name: '',
+              number: ''
+            })
+          })
     } else {
       personsService
         .create(newPerson)
@@ -82,7 +92,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm value={newPerson} handleSubmit={addNewPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} handleDelete={handleDelete} />
+      <Persons persons={personsToShow} handleDelete={removePerson} />
     </div>
     
   )
