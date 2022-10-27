@@ -40,6 +40,14 @@ const App = () => {
     setSearchTerm(event.target.value)
   }
 
+  const handleDelete = (id) => {
+    personsService
+      .remove(id)
+      .then(() => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+  }
+
   const addNewPerson = (event) => {
     event.preventDefault()
 
@@ -74,7 +82,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm value={newPerson} handleSubmit={addNewPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDelete} />
     </div>
     
   )

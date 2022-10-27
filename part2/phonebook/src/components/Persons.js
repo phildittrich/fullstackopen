@@ -1,14 +1,25 @@
-const Person = ({person}) => 
-  <li>
-    {person.name} {person.number}
-  </li>
+const Person = ({person, handleDelete}) => {
+  const confirmDelete = () => ()  => {
+    if(window.confirm(`Do you really want to delete ${person.name}?`)) {
+      handleDelete(person.id)
+    }
+  }
 
-const Persons = ({persons}) =>
+  return (
+    <li>
+      {person.name} {person.number} <button onClick={confirmDelete()}>delete</button>
+    </li>
+  )
+}
+
+
+const Persons = ({persons, handleDelete}) =>
   <ul>
   {persons.map( person => 
     <Person
-      key = {person.name}
+      key = {person.id}
       person = {person}
+      handleDelete = {handleDelete}
     />
   )}
   </ul>
