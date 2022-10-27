@@ -7,16 +7,19 @@ const Notification = ({ message }) => {
     padding: '10px',
     marginBottom: '10px',
     background: 'lightgrey'
-
   }
 
-  if (message === '') {
+  if(!message.success) {
+    notificationStyle.color = 'red'
+  }
+
+  if (!message.text) {
     return null
   }
 
   return (
     <div style={notificationStyle}>
-      {message}
+      {message.text}
     </div>
   )
 }

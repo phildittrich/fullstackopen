@@ -14,7 +14,7 @@ const App = () => {
     number: ''  
   })
   const [searchTerm, setSearchTerm] = useState('')
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState({})
 
   useEffect(() => {
     personsService
@@ -24,9 +24,9 @@ const App = () => {
       })
   }, [])
 
-  const showNotification = (message) => {
-    setNotification(message)
-    setTimeout(() => setNotification(''), 5000)
+  const showNotification = (text, success) => {
+    setNotification({text, success})
+    setTimeout(() => setNotification({}), 5000)
   }
 
   const handleNameChange = (event) => {
@@ -48,10 +48,16 @@ const App = () => {
   }
 
   const removePerson = (id) => {
+    const person = persons.find(p => p.id === id)
     personsService
       .remove(id)
       .then(() => {
         setPersons(persons.filter(p => p.id !== id))
+        showNotification(`${person.name} has been deleted`, true)
+      })
+      .catch(error => {
+        const failedPerson = persons.find(p => p.id === id)
+        showNotification(`Information of ${person.name} has already been removed from server`, false)
       })
   }
 
@@ -65,25 +71,28 @@ const App = () => {
           .update(existingPerson.id, newPerson)
           .then(data => {
             setPersons( persons.map( p => p.id !== data.id ? p : data ) )
-            showNotification(`${existingPerson.name} has been updated`)
+            showNotification(`${existingPerson.name} has been updated`, true)
             setNewPerson({
               name: '',
               number: ''
             })
+          })
+          .catch(error => {
+            showNotification(`Updating of ${existingPerson.name} failed`, false)
           })
     } else {
       personsService
         .create(newPerson)
         .then(data => {
           setPersons(persons.concat(data))
-          showNotification(`${newPerson.name} has been added`)
+          showNotification(`${newPerson.name} has been added`, true)
           setNewPerson({
             name: '',
             number: ''
           })
         })
         .catch(error => {
-          console.log('fail')
+          showNotification(`Creation of ${existingPerson.name} has failed`, false)
         })
     }
   }
@@ -97,7 +106,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={notification} />
+      <Notification message={notification}/>
       <Filter value={searchTerm} handleChange={handleSearchTermChange} />
       <h2>add a new</h2>
       <PersonForm value={newPerson} handleSubmit={addNewPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
