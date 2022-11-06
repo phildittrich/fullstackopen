@@ -78,9 +78,9 @@ const App = () => {
             })
           })
           .catch(error => {
-            showNotification(`Updating of ${existingPerson.name} failed`, false)
+            showNotification(`Updating of ${existingPerson.name} failed: ${error.response.data.error}`, false)
           })
-    } else {
+    } else if (!existingPerson) {
       personsService
         .create(newPerson)
         .then(data => {
@@ -92,7 +92,7 @@ const App = () => {
           })
         })
         .catch(error => {
-          showNotification(`Creation of ${existingPerson.name} has failed`, false)
+          showNotification(`Creation of ${newPerson.name} has failed: ${error.response.data.error}`, false)
         })
     }
   }
