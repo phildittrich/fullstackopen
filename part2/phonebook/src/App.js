@@ -56,7 +56,6 @@ const App = () => {
         showNotification(`${person.name} has been deleted`, true)
       })
       .catch(error => {
-        const failedPerson = persons.find(p => p.id === id)
         showNotification(`Information of ${person.name} has already been removed from server`, false)
       })
   }
