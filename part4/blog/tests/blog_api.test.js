@@ -5,6 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const { text } = require('express')
 
 beforeEach(async() => {
   await Blog.deleteMany({})
@@ -51,6 +52,37 @@ test('expect post request to add a new blog', async () => {
   expect(title).toContain(
     'Blog 3'
   )
+}, 100000)
+
+test('expect missing likes to default to zero', async () => {
+  const newBlog = {
+    title: 'Blog 3',
+    author: 'Blog Enthusiast',
+    url: 'https://blog3.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const savedBlog = response.body.find(r => r.title === newBlog.title)
+
+  expect(savedBlog.likes).toBe(0)
+}, 100000)
+
+test('blog without title is not added', async () => {
+  const newBlog = {
+    author: 'Jens Dirk',
+    url: 'https://url.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
 }, 100000)
 
 afterAll(() => {
