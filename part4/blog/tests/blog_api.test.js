@@ -17,6 +17,8 @@ beforeEach(async() => {
 test('blog api returns the expected number of blogs', async () => {
   const response = await api
     .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
     
   expect(response.body).toHaveLength(2)
 }, 100000)
@@ -26,6 +28,29 @@ test('expect the unique identifier to be named id', async () => {
     .get('/api/blogs')
 
   expect(response.body[0].id).toBeDefined()
+}, 100000)
+
+test('expect post request to add a new blog', async () => {
+  const newBlog = {
+    title: 'Blog 3',
+    author: 'Blog Enthusiast',
+    url: 'https://blog3.com',
+    likes: 30
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const title = response.body.map(r => r.title)
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  expect(title).toContain(
+    'Blog 3'
+  )
 }, 100000)
 
 afterAll(() => {
