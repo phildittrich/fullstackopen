@@ -6,6 +6,7 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 const { text } = require('express')
+const blog = require('../models/blog')
 
 beforeEach(async() => {
   await Blog.deleteMany({})
@@ -102,6 +103,24 @@ test('a blog can be deleted', async () => {
   const titles = blogsAtEnd.map(r => r.title)
 
   expect(titles).not.toContain(blogToDelete.content)
+})
+
+test('a blog can be updated', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const blogToUpdate = blogsAtStart[0]
+
+  blogToUpdate.likes = 30
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(blogToUpdate)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const updatedBlog = blogsAtEnd.find(r => r.id === blogToUpdate.id)
+
+  expect(updatedBlog.likes).toBe(30)
 })
 
 

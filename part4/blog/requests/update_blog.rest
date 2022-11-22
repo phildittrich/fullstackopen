@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/6369bfea3d1184b5392d8933 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Doughy Doe",
+    "author": "Jon Doe",
+    "url": "https://jondoe.com",
+    "likes": 20
+}
