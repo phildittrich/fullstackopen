@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs/ HTTP/1.1
-content-type: application/json
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBkaXR0cmljaCIsImlkIjoiNjM3ZjI5ZTU1MTZlOTRhZmI4ODMyNTczIiwiaWF0IjoxNjY5MzA1NTUxfQ.33dpsXfVj9tvlG_wpyLzUgPUXYr6zjulv-Z-lP-4j70
 
 {
     "title": "Doughy Doe",
