@@ -3,13 +3,38 @@ const supertest = require('supertest')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
+const bcrypt = require('bcrypt')
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-beforeEach(async() => {
+let token
+let savedUser
+
+beforeAll(async () => {
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('secret', 10)
+  const user = new User({ username: 'test', passwordHash })
+
+  savedUser = await user.save()
+
+  const login = {
+    username: 'test',
+    password: 'secret'
+  }
+
+  const response = await api
+    .post('/api/login')
+    .send(login)
+
+  token = response.body.token
+})
+
+beforeEach(async () => {
   await Blog.deleteMany({})
 
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+  const blogObjects = helper.initialBlogs.map(blog => new Blog({ user: savedUser._id, ...blog }))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -41,6 +66,7 @@ test('expect post request to add a new blog', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -63,6 +89,7 @@ test('expect missing likes to default to zero', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -81,6 +108,7 @@ test('blog without title is not added', async () => {
   await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `bearer ${token}`)
     .expect(400)
 }, 100000)
 
@@ -90,6 +118,7 @@ test('a blog can be deleted', async () => {
 
   await api
     .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', `bearer ${token}`)
     .expect(204)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -101,7 +130,7 @@ test('a blog can be deleted', async () => {
   const titles = blogsAtEnd.map(r => r.title)
 
   expect(titles).not.toContain(blogToDelete.content)
-})
+}, 100000)
 
 test('a blog can be updated', async () => {
   const blogsAtStart = await helper.blogsInDb()
@@ -111,6 +140,7 @@ test('a blog can be updated', async () => {
 
   await api
     .put(`/api/blogs/${blogToUpdate.id}`)
+    .set('Authorization', `bearer ${token}`)
     .send(blogToUpdate)
     .expect(200)
 
@@ -119,7 +149,7 @@ test('a blog can be updated', async () => {
   const updatedBlog = blogsAtEnd.find(r => r.id === blogToUpdate.id)
 
   expect(updatedBlog.likes).toBe(30)
-})
+}, 100000)
 
 
 afterAll(() => {
